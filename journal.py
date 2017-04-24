@@ -127,7 +127,6 @@ def edit_entry(entry_id):
     if form.validate_on_submit():
 
         query = models.Entry.update(
-                                    user=current_user,
                                     title=form.title.data,
                                     time_spent=form.time_spent.data,
                                     date=form.date.data,
