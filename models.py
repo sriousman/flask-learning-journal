@@ -64,7 +64,7 @@ class Entry(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Entry, Resource], safe=True)
+    DATABASE.create_tables([User, Entry], safe=True)
     try:
         User.create_user(
             username='Gman',

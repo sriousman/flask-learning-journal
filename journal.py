@@ -93,7 +93,8 @@ def new_entry():
             time_spent=form.time_spent.data,
             date=form.date.data,
             learned=form.learned.data,
-            user=current_user
+            resources=form.resources.data,
+            user=current_user.id
         )
 
         flash("Alright, you created an entry!", "success")
