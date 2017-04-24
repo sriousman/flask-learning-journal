@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+        <section class="entry">
+            <div class="container">
+                <div class="entry-list single">
+                    <article>
+                        <h1>{{ entry.title }}</h1>
+                        <time datetime="2016-01-31">January 31, 2016</time>
+                        <div class="entry">
+                            <h3>Time Spent: </h3>
+                            <p>{{ entry.time_spent }} Hours</p>
+                        </div>
+                        <div class="entry">
+                            <h3>What I Learned:</h3>
+                            <p>{{ entry.learned }}</p>
+                        </div>
+                        <div class="entry">
+                            <h3>Resources to Remember:</h3>
+                            {% if entry.resources %}
+                              {% if entry.resources.count() %}
+                                {% for resource in entry.resources %}
+                                  <ul>
+                                      <li><a href="{{ resource.url }}">{{ resource.name }}</a></li>
+                                  </ul>
+                                {% endfor %}
+                              {% endif %}
+                            {% endif %}
+
+                    </article>
+                </div>
+            </div>
+            <div class="edit">
+                <p><a href="{{ url_for('edit_entry', entry_id=entry.id) }}">Edit Entry</a></p>
+            </div>
+        </section>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+  <section>
+      <div class="container">
+        <h2 id="greeting">{% if current_user.is_authenticated %}
+                            Welcome to your Journal {{ current_user.username }}!
+                          {% else %}
+                            Welcome to Journal!</br></br>Please Sign up or Log in.
+                          {% endif %}
+        </h2>
+          <div class="entry-list">
+          {% if current_user.is_authenticated %}
+            {% if current_user.entries.count() %}
+              <article>
+                <div class="entry">
+                  <table style="width:100%">
+                    <tr>
+                      <th>Title</th>
+                      <th>Date</th>
+                      <th>Options</th>
+                    </tr>
+
+                    {% for entry in current_user.entries %}
+
+                    <tr>
+                      <td><a href="{{ url_for('details', entry_id=entry.id) }}">{{ entry.title }}</a></td>
+                      <td><time data-time="{{ entry.date }}" datetime="{{ entry.date }}">{{ entry.date }}</time></td>
+                      <td><a href="{{ url_for('edit_entry', entry_id=entry.id) }}">Edit</a></td>
+                    </tr>
+
+
+                    {% endfor %}
+                  </table>
+                </div>
+              </article>
+            {% else %}
+            <h2>You have no entries... create one!</h2>
+            {% endif %}
+          {% endif %}
+          </div>
+      </div>
+  </section>
+{% endblock %}
