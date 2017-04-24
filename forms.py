@@ -13,16 +13,6 @@ from wtforms.validators import (
 from models import User
 
 
-def name_exists(form, field):
-    if User.select().where(User.username == field.data).exists():
-        raise ValidationError('User with that name already exists.')
-
-
-def email_exists(form, field):
-    if User.select().where(User.email == field.data).exists():
-        raise ValidationError('User with that email already exists.')
-
-
 class RegisterForm(Form):
     username = StringField(
         'Username',
@@ -60,17 +50,12 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[DataRequired()])
 
 
-class ResourceForm(Form):
-    name = StringField('Name')
-    url = StringField('URL', validators=[URL()])
-
-
 class NewEntryForm(Form):
     title = StringField('Title', validators=[DataRequired()])
     date = DateField('Date', validators=[DataRequired()])
     time_spent = IntegerField('Time Spent', validators=[DataRequired()])
     learned = TextAreaField('What I Learned', validators=[DataRequired()])
-    resources = FormField(ResourceForm)
+    resources = TextAreaField('Resources', validators=[DataRequired()])
 
 
 class EditForm(Form):
@@ -78,3 +63,4 @@ class EditForm(Form):
     date = DateField('Date')
     time_spent = IntegerField('Time Spent')
     learned = TextAreaField('What I Learned')
+    resources = TextAreaField('Resources')

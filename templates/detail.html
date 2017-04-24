@@ -16,16 +16,7 @@
                         </div>
                         <div class="entry">
                             <h3>Resources to Remember:</h3>
-                            {% if entry.resources %}
-                              {% if entry.resources.count() %}
-                                {% for resource in entry.resources %}
-                                  <ul>
-                                      <li><a href="{{ resource.url }}">{{ resource.name }}</a></li>
-                                  </ul>
-                                {% endfor %}
-                              {% endif %}
-                            {% endif %}
-
+                            <p>{{ entry.resources }}</p>
                     </article>
                 </div>
             </div>

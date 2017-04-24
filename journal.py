@@ -85,15 +85,8 @@ def logout():
 
 @app.route('/new', methods=('GET', 'POST'))
 @login_required
-def new_entry(res=[]):
+def new_entry():
     form = forms.NewEntryForm()
-    r_form = forms.ResourceForm()
-
-    if r_form.validate_on_submit():
-        res.append([r_form.name.data, r_form.url.data])
-        flash("You added a resource!", "success")
-        return render_template('new.html', form=form, res=res)
-
     if form.validate_on_submit():
         entry = models.Entry.create(
             title=form.title.data,
@@ -102,13 +95,10 @@ def new_entry(res=[]):
             learned=form.learned.data,
             user=current_user
         )
-        if res:
-            for r in res:
-                entry.add_resource(*r)
 
         flash("Alright, you created an entry!", "success")
         return redirect(url_for('details', entry_id=entry.get().id))
-    return render_template('new.html', form=form, r_form=rform, res=res)
+    return render_template('new.html', form=form)
 
 
 @app.route('/detail/<int:entry_id>')
@@ -132,6 +122,7 @@ def edit_entry(entry_id):
         form.time_spent.data = entry.time_spent
         form.date.data = entry.date
         form.learned.data = entry.learned
+        form.resources.data = entry.resources
     if form.validate_on_submit():
 
         query = models.Entry.update(

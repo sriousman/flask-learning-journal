@@ -18,15 +18,6 @@ class User(UserMixin, Model):
         database = DATABASE
         order_by = ('-joined_at',)
 
-    def get_posts(self):
-        return Post.select().where(Post.user == self)
-
-    def get_stream(self):
-        return Post.select().where(
-            (Post.user << self.following()) |
-            (Post.user == self)
-        )
-
     @classmethod
     def create_user(cls, username, email, password, admin=False):
         try:
@@ -45,28 +36,18 @@ class Entry(Model):
     date = DateTimeField(default=datetime.datetime.now)
     time_spent = IntegerField()
     learned = TextField()
+    resources = TextField()
     user = ForeignKeyField(
         rel_model=User,
         related_name='entries'
     )
-
-    def add_resource(self, name, url):
-        try:
-            with DATABASE.transaction():
-                Resource.create(
-                        entry=self,
-                        url=url,
-                        name=name
-                    )
-        except IntegrityError:
-            raise ValueError("Invalid resource")
 
     class Meta:
         database = DATABASE
         order_by = ('-date',)
 
     @classmethod
-    def create_entry(cls, user, title, time_spent, learned, date):
+    def create_entry(cls, user, title, time_spent, learned, resources, date):
         try:
             with DATABASE.transaction():
                 cls.create(
@@ -74,19 +55,11 @@ class Entry(Model):
                     title=title,
                     time_spent=time_spent,
                     date=date,
-                    learned=learned
+                    learned=learned,
+                    resources=resources
                 )
         except IntegrityError:
             raise ValueError("Entry already exists")
-
-
-class Resource(Model):
-    entry = ForeignKeyField(Entry, related_name='resources')
-    name = CharField()
-    url = CharField()
-
-    class Meta:
-        database = DATABASE
 
 
 def initialize():
@@ -106,6 +79,7 @@ def initialize():
         date=datetime.datetime.strptime('2017-4-17', '%Y-%m-%d'),
         time_spent=3,
         learned='The innerworkings of a python web framework',
+        resources='Flask docs - http://flask.pocoo.org/docs/0.12/',
         user=user
         )
     Entry.create_entry(
@@ -113,13 +87,8 @@ def initialize():
         date=datetime.datetime.strptime('2017-4-17', '%Y-%m-%d'),
         time_spent=3,
         learned='The innerworkings of a python web framework',
+        resources='Flask docs - http://flask.pocoo.org/docs/0.12/',
         user=user
-    )
-    entry = user.entries.get()
-    Resource.create(
-        entry=entry,
-        name='Flask Docs',
-        url='http://flask.pocoo.org/'
     )
 
     DATABASE.close()
