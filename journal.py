@@ -102,6 +102,15 @@ def new_entry():
     return render_template('new.html', form=form)
 
 
+@app.route('/delete/<int:entry_id>')
+@login_required
+def delete_entry(entry_id):
+    entry = models.Entry.select().where(models.Entry.id == entry_id).get()
+    entry.delete_instance()
+    flash("Entry has been deleted!", "success")
+    return render_template('index.html')
+
+
 @app.route('/detail/<int:entry_id>')
 @login_required
 def details(entry_id):
